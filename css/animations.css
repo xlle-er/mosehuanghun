@@ -1,0 +1,239 @@
+/* ============================================
+   Animations - 动画效果
+   ============================================ */
+
+/* ---- 淡入 ---- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- 打字机效果 ---- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--color-accent);
+  margin-left: 2px;
+  animation: blink 1s infinite;
+  vertical-align: text-bottom;
+}
+
+/* ---- 发光效果 ---- */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(201, 169, 110, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(201, 169, 110, 0.6);
+  }
+}
+
+.glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* ---- 脉冲 ---- */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ---- 摇晃 ---- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+/* ---- 雨滴效果 ---- */
+@keyframes rainDrop {
+  0% {
+    transform: translateY(-100vh) rotate(15deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(100vh) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.rain-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.rain-drop {
+  position: absolute;
+  top: -10px;
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(174, 194, 204, 0.3));
+  animation: rainDrop linear infinite;
+}
+
+/* ---- 闪电效果 ---- */
+@keyframes lightning {
+  0%, 100% { opacity: 0; }
+  92% { opacity: 0; }
+  93% { opacity: 0.8; }
+  94% { opacity: 0; }
+  96% { opacity: 0.6; }
+  97% { opacity: 0; }
+}
+
+.lightning-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(200, 200, 220, 0.15);
+  pointer-events: none;
+  z-index: 2;
+  animation: lightning 8s ease-in-out infinite;
+}
+
+/* ---- 翻页效果 ---- */
+@keyframes pageTurn {
+  0% {
+    transform: perspective(1200px) rotateY(0);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(-90deg);
+    opacity: 0;
+  }
+}
+
+/* ---- 场景过渡 ---- */
+.scene-transition {
+  animation: fadeIn var(--transition-slow) ease;
+}
+
+/* ---- 线索获得闪烁 ---- */
+@keyframes clueFlash {
+  0% {
+    background: rgba(201, 169, 110, 0);
+  }
+  50% {
+    background: rgba(201, 169, 110, 0.1);
+  }
+  100% {
+    background: rgba(201, 169, 110, 0);
+  }
+}
+
+.clue-flash {
+  animation: clueFlash 0.8s ease;
+}
+
+/* ---- 开场标题 ---- */
+@keyframes titleReveal {
+  0% {
+    opacity: 0;
+    letter-spacing: 30px;
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: 12px;
+    filter: blur(0);
+  }
+}
+
+.intro-title {
+  font-family: var(--font-title);
+  animation: titleReveal 2s ease-out forwards;
+}
+
+/* ---- 信件展开 ---- */
+@keyframes letterUnfold {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+    transform-origin: top;
+  }
+}
+
+.letter-unfold {
+  animation: letterUnfold 0.8s ease-out forwards;
+}
+
+/* ---- 打字机文字逐行显示 ---- */
+.typewriter-line {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.typewriter-line:nth-child(1) { animation-delay: 0.5s; }
+.typewriter-line:nth-child(2) { animation-delay: 1.5s; }
+.typewriter-line:nth-child(3) { animation-delay: 2.5s; }
+.typewriter-line:nth-child(4) { animation-delay: 3.5s; }
+.typewriter-line:nth-child(5) { animation-delay: 4.5s; }
+.typewriter-line:nth-child(6) { animation-delay: 5.5s; }
+.typewriter-line:nth-child(7) { animation-delay: 6.5s; }
+.typewriter-line:nth-child(8) { animation-delay: 7.5s; }
+.typewriter-line:nth-child(9) { animation-delay: 8.5s; }
+.typewriter-line:nth-child(10) { animation-delay: 9.5s; }
+
+/* ---- 渐变背景 ---- */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, var(--color-bg-primary), var(--color-bg-secondary), var(--color-bg-scene));
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
