@@ -298,7 +298,7 @@ window.CLUES_DATA = {
     level: 'important',
     category: 'suspect',
     description: '一封20年前的信件，显示周叔同帮陈墨白处理过赵明远事件。',
-    location: '书房→周叔同抽屉',
+    location: '地下室→保险箱',
     detail: '一封20年前的信件：\n\n"叔同：\n明远那边的事情已经处理好了。他不会再来找麻烦。这件事你知我知，永远不要告诉任何人......\n\n墨白"\n\n这证明周叔同知道陈墨白欺诈赵明远的事情......'
   },
 

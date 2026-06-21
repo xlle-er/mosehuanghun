@@ -645,7 +645,7 @@ window.SCENES_DATA = {
           answer: '1974'
         },
         clueDetail: '保险箱里有20年前的交易合同和鉴定报告，证明陈墨白确实欺诈了赵明远......',
-        clues: ['C16']
+        clues: ['C16', 'I11']
       },
       {
         id: 'basement-info',

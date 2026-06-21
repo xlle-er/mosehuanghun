@@ -17,6 +17,7 @@ class GameState {
       unlockedScenes: ['intro', 'study', 'living-room', 'gallery', 'bedrooms', 'garden', 'police-station', 'forensic-office'],
       visitedScenes: [],
       dialogueHistory: {},
+      dialogueUnlockNotified: [],
       puzzleSolved: {},
       caseBriefed: false,
       gameStartTime: null,

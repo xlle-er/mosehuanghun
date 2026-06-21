@@ -10,11 +10,19 @@ class DialogueSystem {
     this._typingDone = false;
     this._typewriterResolve = null;
     this._currentFullText = '';
+    this._clueAddedUnsubscribe = null;
+    this._dialogueUnlockTimer = null;
+    this._pendingDialogueUnlocks = [];
   }
 
   // 初始化
   init(dialoguesData) {
     this.dialogues = dialoguesData || {};
+    if (!this._clueAddedUnsubscribe && typeof gameState !== 'undefined') {
+      this._clueAddedUnsubscribe = gameState.on('clueAdded', (clueId) => {
+        this._checkDialogueUnlocks(clueId);
+      });
+    }
   }
 
   // 开始对话
@@ -115,18 +123,123 @@ class DialogueSystem {
     return required.every(function (id) { return gameState.hasClue(id); });
   }
 
+  _getRequiredClues(option) {
+    var required = [];
+    if (!option) return required;
+    if (option.requiresClue) required.push(option.requiresClue);
+    if (Array.isArray(option.requiresClues)) {
+      required = required.concat(option.requiresClues);
+    }
+    return required;
+  }
+
+  _checkDialogueUnlocks(clueId) {
+    if (!clueId || typeof gameState === 'undefined') return;
+
+    var notified = gameState.get('dialogueUnlockNotified') || [];
+    var nextNotified = notified.slice();
+    var unlockedByCharacter = {};
+
+    Object.keys(this.dialogues || {}).forEach((characterId) => {
+      var dialogue = this.dialogues[characterId];
+      var nodes = dialogue && dialogue.nodes ? dialogue.nodes : {};
+
+      Object.keys(nodes).forEach((nodeId) => {
+        var node = nodes[nodeId];
+        (node.options || []).forEach((option, optionIndex) => {
+          var required = this._getRequiredClues(option);
+          if (required.length === 0 || required.indexOf(clueId) < 0) return;
+          if (!this._requirementsMet(option)) return;
+
+          var key = characterId + ':' + nodeId + ':' + optionIndex;
+          if (nextNotified.indexOf(key) >= 0) return;
+
+          nextNotified.push(key);
+          if (!unlockedByCharacter[characterId]) {
+            unlockedByCharacter[characterId] = {
+              name: dialogue.name || characterId,
+              role: dialogue.role || '',
+              count: 0
+            };
+          }
+          unlockedByCharacter[characterId].count += 1;
+        });
+      });
+    });
+
+    if (nextNotified.length !== notified.length) {
+      gameState.set('dialogueUnlockNotified', nextNotified);
+    }
+
+    var unlocked = Object.keys(unlockedByCharacter).map(function (characterId) {
+      return unlockedByCharacter[characterId];
+    });
+    if (unlocked.length > 0) {
+      this._queueDialogueUnlockNotifications(unlocked);
+    }
+  }
+
+  _queueDialogueUnlockNotifications(unlocked) {
+    this._pendingDialogueUnlocks = this._pendingDialogueUnlocks.concat(unlocked);
+    if (this._dialogueUnlockTimer) return;
+
+    this._dialogueUnlockTimer = setTimeout(() => {
+      var pending = this._pendingDialogueUnlocks.slice();
+      this._pendingDialogueUnlocks = [];
+      this._dialogueUnlockTimer = null;
+      this._showDialogueUnlockNotifications(pending);
+    }, 150);
+  }
+
+  _showDialogueUnlockNotifications(unlocked) {
+    var container = document.getElementById('dialogue-unlock-notification');
+    if (!container || unlocked.length === 0) return;
+
+    var merged = {};
+    unlocked.forEach(function (item) {
+      var key = item.name + '|' + item.role;
+      if (!merged[key]) {
+        merged[key] = { name: item.name, role: item.role, count: 0 };
+      }
+      merged[key].count += item.count || 1;
+    });
+
+    var rows = Object.keys(merged).map((key) => {
+      var item = merged[key];
+      var countText = item.count > 1 ? '有 ' + item.count + ' 条新追问' : '有新的追问';
+      var roleText = item.role ? '<div class="dialogue-unlock-role">' + this._escapeHtml(item.role) + '</div>' : '';
+      return [
+        '<div class="dialogue-unlock-toast">',
+        '  <div class="dialogue-unlock-icon">💬</div>',
+        '  <div class="dialogue-unlock-copy">',
+        '    <div class="dialogue-unlock-label">问话更新</div>',
+        '    <div class="dialogue-unlock-name">' + this._escapeHtml(item.name) + countText + '</div>',
+        roleText,
+        '  </div>',
+        '</div>'
+      ].join('\n');
+    }).join('');
+
+    container.innerHTML = rows;
+    container.classList.remove('hidden');
+    container.offsetHeight;
+    container.classList.add('show');
+
+    setTimeout(function () {
+      container.classList.remove('show');
+      setTimeout(function () { container.classList.add('hidden'); }, 300);
+    }, 4200);
+  }
+
   _renderOptions(node, nodeId, hideTerminalOptions) {
     var self = this;
-    var lockedHintShown = false;
 
     var optionHtml = (node.options || []).map(function (opt, i) {
       if (hideTerminalOptions && !opt.next && !opt.clues) return '';
 
       var locked = !self._requirementsMet(opt);
       if (locked) {
-        if (lockedHintShown) return '';
-        lockedHintShown = true;
-        return '<button class="dialogue-option" disabled style="opacity:0.35;cursor:not-allowed;">🔒 找到相关证据后可继续追问</button>';
+        return '';
       }
 
       var selected = gameState.hasDialogueOption(self.current.characterId, nodeId, i);
@@ -134,8 +247,8 @@ class DialogueSystem {
       return '<button class="dialogue-option" onclick="dialogueSystem.selectOption(' + i + ')">' + self._escapeHtml(label) + '</button>';
     }).filter(Boolean).join('');
 
-    var hasEnd = (node.options || []).some(function (opt) { return self._isEndOption(opt); });
-    if (!hideTerminalOptions && !hasEnd) {
+    var hasTerminal = (node.options || []).some(function (opt) { return !opt.next; });
+    if (!hideTerminalOptions && !hasTerminal) {
       optionHtml += '<button class="dialogue-option" onclick="dialogueSystem.close()">（结束对话）</button>';
     }
 

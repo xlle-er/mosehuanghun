@@ -137,6 +137,76 @@
   margin-top: 4px;
 }
 
+/* ---- 对话解锁提示 ---- */
+#dialogue-unlock-notification {
+  position: fixed;
+  top: 80px;
+  left: var(--spacing-lg);
+  width: 320px;
+  z-index: var(--z-notification);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+}
+
+.dialogue-unlock-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  background: rgba(20, 27, 24, 0.94);
+  border: 1px solid rgba(98, 184, 146, 0.42);
+  border-left: 4px solid #62b892;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+  transform: translateX(calc(-100% - 40px));
+  transition: transform var(--transition-normal);
+  pointer-events: auto;
+}
+
+#dialogue-unlock-notification.show .dialogue-unlock-toast {
+  transform: translateX(0);
+}
+
+.dialogue-unlock-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(98, 184, 146, 0.14);
+  border-radius: var(--radius-sm);
+  font-size: 20px;
+}
+
+.dialogue-unlock-copy {
+  min-width: 0;
+}
+
+.dialogue-unlock-label {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-xs);
+  color: #8fd9b7;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.dialogue-unlock-name {
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  color: var(--color-text-bright);
+  overflow-wrap: anywhere;
+}
+
+.dialogue-unlock-role {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
 /* ---- 对话框 ---- */
 #dialogue-box {
   position: fixed;
@@ -993,6 +1063,17 @@
 }
 
 @media (max-width: 560px) {
+  #clue-notification,
+  #dialogue-unlock-notification {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    width: auto;
+  }
+
+  #dialogue-unlock-notification {
+    top: 148px;
+  }
+
   .match-board {
     grid-template-columns: 1fr;
   }
