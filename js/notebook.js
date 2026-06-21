@@ -15,11 +15,21 @@ class Notebook {
   }
 
   _panelWidthCss() {
+    if (this._isMobileLayout()) {
+      return 'min(380px, calc(100vw - 24px))';
+    }
     return 'min(380px, 40vw)';
   }
 
   _sceneCenterCss() {
+    if (this._isMobileLayout()) return '50%';
     return 'calc((100% - ' + this._panelWidthCss() + ') / 2)';
+  }
+
+  _isMobileLayout() {
+    return typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(max-width: 760px)').matches;
   }
 
   syncLayout() {
@@ -44,7 +54,7 @@ class Notebook {
       'position: fixed',
       'top: 0',
       'right: 0',
-      'width: 380px',
+      'width: min(380px, calc(100vw - 24px))',
       'max-width: 40vw',
       'height: 100vh',
       'background: #1a1209',
@@ -106,37 +116,40 @@ class Notebook {
 
     // 显示面板
     if (this.panel) {
+      this.panel.style.width = this._panelWidthCss();
+      this.panel.style.maxWidth = this._isMobileLayout() ? 'calc(100vw - 24px)' : '40vw';
       this.panel.style.transform = 'translateX(0)';
       console.log('[Notebook] panel shown');
     }
 
     var panelWidth = this._panelWidthCss();
     var sceneCenter = this._sceneCenterCss();
+    var mobileLayout = this._isMobileLayout();
 
-    // 场景压缩让出空间
+    // 桌面端压缩场景让出空间；移动端使用覆盖抽屉，避免把可玩区域挤窄。
     var scene = document.getElementById('scene-container');
     if (scene) {
-      scene.style.width = 'calc(100% - ' + panelWidth + ')';
+      scene.style.width = mobileLayout ? '100%' : 'calc(100% - ' + panelWidth + ')';
       scene.style.transition = 'width 0.35s ease';
     }
 
     // 右侧按钮左移
     var nb = document.getElementById('notebook-btn');
-    if (nb) nb.style.right = 'calc(' + panelWidth + ' + 24px)';
+    if (nb) nb.style.right = mobileLayout ? '' : 'calc(' + panelWidth + ' + 24px)';
     var header = document.getElementById('header');
-    if (header) header.style.right = panelWidth;
+    if (header) header.style.right = mobileLayout ? '' : panelWidth;
 
     // 物品/线索面板左移
     var itemPanel = document.getElementById('item-panel');
     if (itemPanel) {
-      itemPanel.style.left = sceneCenter;
+      itemPanel.style.left = mobileLayout ? '' : sceneCenter;
       itemPanel.style.transition = 'left 0.35s ease';
     }
 
     // 对话框左移
     var dialogueBox = document.getElementById('dialogue-box');
     if (dialogueBox) {
-      dialogueBox.style.right = panelWidth;
+      dialogueBox.style.right = mobileLayout ? '' : panelWidth;
       dialogueBox.style.transition = 'right 0.35s ease';
     }
 
@@ -162,24 +175,24 @@ class Notebook {
 
     // 恢复按钮位置
     var nb = document.getElementById('notebook-btn');
-    if (nb) nb.style.right = '24px';
+    if (nb) nb.style.right = '';
     var header = document.getElementById('header');
-    if (header) header.style.right = '0';
+    if (header) header.style.right = '';
 
     // 恢复物品面板位置
     var itemPanel = document.getElementById('item-panel');
     if (itemPanel) {
-      itemPanel.style.left = '50%';
+      itemPanel.style.left = '';
     }
 
     // 恢复对话框位置
     var dialogueBox = document.getElementById('dialogue-box');
     if (dialogueBox) {
-      dialogueBox.style.right = '0';
+      dialogueBox.style.right = '';
     }
 
     document.querySelectorAll('.scene-nav').forEach(function (nav) {
-      nav.style.left = '50%';
+      nav.style.left = '';
     });
   }
 

@@ -35,6 +35,7 @@
 
     // 地图
     '/map': () => {
+      if (!ensureCaseStarted()) return;
       audioManager.stopAmbience();
       audioManager.playBGM('bgm-mystery');
       audioManager.play('footsteps');
@@ -57,6 +58,7 @@
 
     // 推理室
     '/reasoning': () => {
+      if (!ensureCaseStarted()) return;
       setAppChromeVisible(true);
       audioManager.stopAmbience();
       audioManager.playBGM('bgm-tension');
@@ -65,6 +67,7 @@
 
     // 结局
     '/ending/correct': () => {
+      if (!ensureCaseStarted() || !canShowEnding('correct')) return;
       setAppChromeVisible(true);
       audioManager.stopAmbience();
       audioManager.stopBGM();
@@ -72,6 +75,7 @@
       showEnding('correct');
     },
     '/ending/wrong': () => {
+      if (!ensureCaseStarted() || !canShowEnding('wrong')) return;
       setAppChromeVisible(true);
       audioManager.stopAmbience();
       audioManager.stopBGM();
@@ -83,8 +87,22 @@
     document.body.classList.toggle('app-chrome-hidden', !visible);
   }
 
+  function ensureCaseStarted() {
+    if (gameState.hasInitialCaseClues()) return true;
+    router.navigate('/intro');
+    return false;
+  }
+
+  function canShowEnding(type) {
+    const endings = gameState.get('endings') || {};
+    if (endings[type]) return true;
+    router.navigate(gameState.hasFinalReasoningClues() ? '/reasoning' : '/map');
+    return false;
+  }
+
   // 进入场景（统一处理音效）
   function enterScene(sceneId) {
+    if (!ensureCaseStarted()) return;
     setAppChromeVisible(true);
     const audio = SCENE_AUDIO[sceneId];
     audioManager.stopBGM();
@@ -203,7 +221,7 @@
   function getResumeRoute() {
     const savedScene = gameState.get('currentScene');
     if (!savedScene || savedScene === '/intro') return '/map';
-    if (savedScene === '/reasoning' && !gameState.hasAllCoreClues()) return '/map';
+    if (savedScene === '/reasoning' && !gameState.hasFinalReasoningClues()) return '/map';
     if (savedScene.startsWith('/ending')) return '/map';
     if (savedScene.startsWith('/scene/')) {
       const sceneId = savedScene.replace('/scene/', '');
@@ -439,11 +457,11 @@
               <p>你转向赵雅琴，她的眼神依然平静，但嘴角微微颤抖。</p>
               <p>"凶手就是你，赵雅琴。或者说......<strong>赵小琴</strong>。"</p>
               <p>房间里一片寂静。</p>
-              <p>"二十年前，你的父亲赵明远被陈墨白用赝品欺骗，失去了毕生收藏，最终抑郁自杀。陈墨白假惺惺地收养了你，实际上是为了掩盖真相。"</p>
-              <p>"你在大学期间主修化学和古籍修复，三年前终于找到了真相。你精心策划了这场复仇——在植物温室培育乌头草，提取乌头碱，研制出毒墨水。"</p>
-              <p>"一周前，你以修复古籍为名，在《山居笔记》第四十七页添加了用毒墨水书写的批注。你知道陈墨白有舔手指翻页的习惯......"</p>
-              <p>"品鉴会当天，你进入书房整理古籍，实际上是确认毒药已经生效。当陈墨白翻阅到那一页时，乌头碱通过他的口腔黏膜进入血液......"</p>
-              <p>"他的死，看起来就像心脏病发作。但你知道，这是<strong>复仇</strong>。"</p>
+              <p>"二十年前，你的父亲赵明远被陈墨白用赝品欺骗，失去了毕生收藏，最终自杀。旧案卷宗、遗书和你藏在暗格里的日记，把这条动机线补完整了。"</p>
+              <p>"你学过化学和古籍修复，又能进入温室和古籍室。乌头草培育日志、修复记录、墨水材料采购单，说明这不是临时起意，而是一条准备了很久的路线。"</p>
+              <p>"一周前，你以修复古籍为名，在《山居笔记》第四十七页补上异常批注。指纹集中在那一页，旧摹本证明那行字原本不存在。"</p>
+              <p>"茶水和药物已经排除，法医复检发现口腔黏膜刺激痕迹；而多人证实陈墨白翻页前会舔手指。毒物不是被喝下去的，是被书页带到手指，再进入口腔。"</p>
+              <p>"他的死看起来像心脏病发作，但证据链闭合后，只剩下一种答案：这是<strong>复仇</strong>。"</p>
               <p>赵雅琴闭上眼睛，泪水顺着脸颊滑落。</p>
               <p>"是的，"她轻声说，"我等这一天，等了二十年......"</p>
             </div>

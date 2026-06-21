@@ -20,6 +20,7 @@ class GameState {
       dialogueUnlockNotified: [],
       puzzleSolved: {},
       caseBriefed: false,
+      archiveAuthorized: false,
       gameStartTime: null,
       totalPlayTime: 0,
       endings: { correct: false, wrong: false }
@@ -87,12 +88,31 @@ class GameState {
   }
 
   // 是否拥有全部核心线索
-  hasAllCoreClues() {
-    const core = [
+  getCoreClueIds() {
+    return [
       'C01','C02','C03','C04','C05','C06','C07','C08',
       'C09','C10','C11','C12','C13','C14','C15','C16','C17','C18'
     ];
-    return core.every(id => this._state.collectedClues.includes(id));
+  }
+
+  getExternalCaseClueIds() {
+    return ['I19', 'I20', 'I21', 'I22', 'I23', 'A16'];
+  }
+
+  hasAllCoreClues() {
+    return this.getCoreClueIds().every(id => this._state.collectedClues.includes(id));
+  }
+
+  hasExternalCaseClues() {
+    return this.getExternalCaseClueIds().every(id => this._state.collectedClues.includes(id));
+  }
+
+  hasFinalReasoningClues() {
+    return this.hasAllCoreClues() && this.hasExternalCaseClues();
+  }
+
+  hasInitialCaseClues() {
+    return ['C08', 'A01', 'A10'].every(id => this._state.collectedClues.includes(id));
   }
 
   // 标记场景已访问
@@ -201,6 +221,17 @@ class GameState {
     return false;
   }
 
+  authorizeArchive() {
+    if (!this._state.archiveAuthorized) {
+      this._state = { ...this._state, archiveAuthorized: true };
+      this._save();
+      this.unlockScene('case-archive');
+      this._emit('change', { key: 'archiveAuthorized', value: true, prev: false });
+      return true;
+    }
+    return this.unlockScene('case-archive');
+  }
+
   // 检查解锁条件
   _checkUnlocks() {
     const count = this._state.collectedClues.length;
@@ -221,11 +252,11 @@ class GameState {
       this.unlockScene('basement');
     }
 
-    if (this.hasClue('I19') && !this._state.unlockedScenes.includes('case-archive')) {
+    if (this._state.archiveAuthorized && !this._state.unlockedScenes.includes('case-archive')) {
       this.unlockScene('case-archive');
     }
 
-    if (this.hasAllCoreClues() && !this._state.unlockedScenes.includes('reasoning')) {
+    if (this.hasFinalReasoningClues() && !this._state.unlockedScenes.includes('reasoning')) {
       this.unlockScene('reasoning');
     }
 

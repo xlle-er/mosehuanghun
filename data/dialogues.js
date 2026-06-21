@@ -45,10 +45,10 @@ window.DIALOGUES_DATA = {
     name: '方志远',
     portrait: 'portrait-fang.jpg',
     role: '商业合伙人',
-    longText: '方志远，58岁，陈墨白的商业合伙人，共同经营「墨白文化投资公司」。品鉴会当天下午三点十分进入书房讨论公司事务，约三点二十五分离开。\n\n他看起来很紧张，不停擦拭额头的汗水，手指无意识地敲打着膝盖。谈到公司事务时，他明显变得更加谨慎。',
+    longText: '方志远，58岁，陈墨白的商业合伙人，共同经营「墨白文化投资公司」。品鉴会当天下午三点十分进入书房讨论公司事务，约三点二十五分离开。\n\n他不停擦拭额头的汗水，手指无意识地敲打着膝盖。谈到公司事务时，他会先看一眼门口，再压低声音。',
     nodes: {
       'start': {
-        text: '方志远看起来很紧张，不停地擦拭额头的汗水。他坐在沙发左侧，手指无意识地敲打着膝盖。',
+        text: '方志远坐在沙发左侧，不停擦拭额头的汗水，手指无意识地敲打着膝盖。',
         options: [
           { text: '请描述一下品鉴会当天的活动。', clues: ['A03'], next: 'activity' },
           { text: '你和陈墨白的公司最近情况如何？', next: 'company' },
@@ -92,7 +92,7 @@ window.DIALOGUES_DATA = {
         ]
       },
       'study-observation': {
-        text: '没什么特别的。桌上摊着一本古籍，茶杯里的茶还是满的。陈先生看起来心情不太好，可能是公司的事让他烦心。',
+        text: '我只记得桌上摊着一本古籍，茶杯里的茶还是满的。陈先生当时话很少，像是在为公司的事烦心。',
         options: [
           { text: '（返回）', next: 'start' }
         ]
@@ -130,7 +130,7 @@ window.DIALOGUES_DATA = {
         text: '品鉴会上我帮陈先生鉴定了几件新收的画作。三点半左右，我去书房找他确认一幅画的鉴定结果。大概待了十分钟。',
         options: [
           { text: '鉴定结果如何？', next: 'appraisal' },
-          { text: '你在书房注意到什么吗？', next: 'study-observation' },
+          { text: '你在书房注意到什么吗？', clues: ['C07'], next: 'study-observation' },
           { text: '（返回）', next: 'start' }
         ]
       },
@@ -177,10 +177,10 @@ window.DIALOGUES_DATA = {
     name: '陈子轩',
     portrait: 'portrait-chen.jpg',
     role: '侄子',
-    longText: '陈子轩，28岁，陈墨白的侄子，法定继承人之一。品鉴会当天下午两点四十五分进入书房借书，约三点离开。\n\n他缩在角落里，眼神闪烁，看起来很不自在。他似乎在回避关于钱和继承的话题。',
+    longText: '陈子轩，28岁，陈墨白的侄子，法定继承人之一。品鉴会当天下午两点四十五分进入书房借书，约三点离开。\n\n他缩在角落里，眼神总往手机屏幕上滑。只要谈到钱和继承，他的回答就会短一截。',
     nodes: {
       'start': {
-        text: '陈子轩缩在角落里，眼神闪烁，看起来很不自在。他不停地看手机，似乎在等什么消息。',
+        text: '陈子轩缩在角落里，眼神总往手机屏幕上滑，像是在等一条迟迟没来的消息。',
         options: [
           { text: '请描述一下你当天的活动。', clues: ['A05'], next: 'activity' },
           { text: '你和叔叔的关系怎么样？', next: 'relationship' },
@@ -203,7 +203,7 @@ window.DIALOGUES_DATA = {
         ]
       },
       'will': {
-        text: '改遗嘱？我不知道。他为什么要改？（看起来很惊讶）我一直以为我是主要继承人......',
+        text: '改遗嘱？我不知道。他为什么要改？（陈子轩猛地抬头）我一直以为我是主要继承人......',
         options: [
           { text: '我看到你欠了200万的赌债。（出示证据）', next: 'debt', requiresClue: 'I06' },
           { text: '也许你应该问问律师。（结束）', next: null }
@@ -229,9 +229,9 @@ window.DIALOGUES_DATA = {
         ]
       },
       'study-observation': {
-        text: '没什么特别的。叔叔坐在书桌旁看书，桌上有一杯茶。对了，保险箱的密码是叔叔的生日——19520315。如果你需要的话。',
+        text: '叔叔坐在书桌旁看书，桌上有一杯茶。至于保险箱，他喜欢用自己的生日做密码；完整日期在客厅那幅画像铭牌上，不难查。',
         options: [
-          { text: '谢谢，这很有用。（结束）', next: null }
+          { text: '我会去核对画像铭牌。（结束）', next: null }
         ]
       }
     }
@@ -379,7 +379,7 @@ window.DIALOGUES_DATA = {
     longText: '钱伯年，55岁，陈墨白的长期古董供应商。品鉴会当天下午四点半进入书房讨论生意纠纷，约四点四十五分离开。\n\n他焦虑不安，额头上有细密的汗珠。提到近期交易时，他明显不愿多谈。',
     nodes: {
       'start': {
-        text: '钱伯年坐在茶几旁，手指不停地敲打着桌面。他看起来焦虑不安，额头上有细密的汗珠。',
+        text: '钱伯年坐在茶几旁，手指不停敲打桌面，额头上有细密的汗珠。',
         options: [
           { text: '请描述一下品鉴会当天的活动。', clues: ['A07'], next: 'activity' },
           { text: '你和陈墨白最近有什么纠纷吗？', next: 'dispute' },
@@ -430,10 +430,10 @@ window.DIALOGUES_DATA = {
     name: '林婉清',
     portrait: 'portrait-lin.jpg',
     role: '妻子',
-    longText: '林婉清，42岁，陈墨白的第二任妻子。品鉴会当天下午五点进入书房送药，约五点十分离开。\n\n她眼圈微红，手里攥着一块手帕，看起来很悲伤。但她谈到婚姻时语气闪躲，似乎还有隐情。',
+    longText: '林婉清，42岁，陈墨白的第二任妻子。品鉴会当天下午五点进入书房送药，约五点十分离开。\n\n她眼圈微红，手里攥着一块手帕。谈到婚姻时，她会把手帕绕在指尖，停顿比回答更长。',
     nodes: {
       'start': {
-        text: '林婉清坐在沙发右侧，眼圈微红，手里攥着一块手帕。她看起来很悲伤，但你总觉得那悲伤里少了些什么。',
+        text: '林婉清坐在沙发右侧，眼圈微红，手里攥着一块手帕。每次提到陈墨白，她都会先看向窗外。',
         options: [
           { text: '请描述一下你当天的活动。', clues: ['A08'], next: 'activity' },
           { text: '你和陈墨白的婚姻幸福吗？', next: 'marriage' },
@@ -448,7 +448,7 @@ window.DIALOGUES_DATA = {
         ]
       },
       'medicine': {
-        text: '他看起来还好，正在看书。我把药放在桌上就出来了。没想到那是我最后一次见到他活着......',
+        text: '他坐在书桌后看书，呼吸还算平稳。我把药放在桌上就出来了。没想到那是我最后一次见到他活着......',
         options: [
           { text: '药瓶检查显示药物没有异常。（出示证据）', next: 'medicine-cleared', requiresClue: 'I13' },
           { text: '（返回）', next: 'start' }
@@ -498,10 +498,10 @@ window.DIALOGUES_DATA = {
     name: '周叔同',
     portrait: 'portrait-zhou.jpg',
     role: '秘书',
-    longText: '周叔同，50岁，陈墨白的私人秘书，服务20年。他是当天下午五点半发现尸体的人。\n\n他神情憔悴，对主人的死显然非常悲痛。作为跟随陈墨白最久的人，他显然知道不少陈年旧事，却不愿主动提起。',
+    longText: '周叔同，50岁，陈墨白的私人秘书，服务20年。他是当天下午五点半发现尸体的人。\n\n他神情憔悴，说话时常下意识整理袖口。作为跟随陈墨白最久的人，他知道不少陈年旧事，却不愿主动提起。',
     nodes: {
       'start': {
-        text: '周叔同站在门口，神情憔悴。他跟了陈墨白二十年，对主人的死显然非常悲痛。',
+        text: '周叔同站在门口，神情憔悴。他跟了陈墨白二十年，说到"先生"两个字时声音会压低。',
         options: [
           { text: '请描述一下你发现尸体的经过。', clues: ['A09'], next: 'discovery' },
           { text: '你和陈墨白是什么关系？', clues: ['I12'], next: 'relationship' },
@@ -516,7 +516,7 @@ window.DIALOGUES_DATA = {
         ]
       },
       'observation': {
-        text: '一切看起来都很正常。桌上的茶杯还是满的，古籍摊开着。只是那把椅子倒了，可能是陈先生倒下的时候碰倒的。',
+        text: '桌上的茶杯还是满的，古籍摊开着。只有那把椅子倒在旁边，像是陈先生倒下时碰翻的。',
         options: [
           { text: '旧摹本显示第47页多了一行批注。（出示证据）', next: 'old-rubbing-comment', requiresClue: 'B16' },
           { text: '（返回）', next: 'start' }
@@ -525,7 +525,7 @@ window.DIALOGUES_DATA = {
       'old-rubbing-comment': {
         text: '多了一行？（周叔同皱起眉）陈先生对那本书很在意，平时连翻页都很小心。如果有人在上面补了字，他不一定立刻发现，因为他相信赵馆长的修复手艺。',
         options: [
-          { text: '他经常舔手指翻页吗？', next: 'page-habit' },
+          { text: '他经常舔手指翻页吗？', clues: ['C07'], next: 'page-habit' },
           { text: '（返回）', next: 'discovery' }
         ]
       },
@@ -559,14 +559,14 @@ window.DIALOGUES_DATA = {
       'zhao-yaqin': {
         text: '她应该不知道。陈先生收养她的时候，她才十岁。我们一直瞒着她。但......有时候我看到她的眼神，总觉得她知道些什么。',
         options: [
-          { text: '地下室有个保险箱，你知道密码吗？', next: 'basement-safe' },
+          { text: '地下室有个保险箱，你知道密码线索吗？', next: 'basement-safe' },
           { text: '谢谢你的坦诚。（结束）', next: null }
         ]
       },
       'basement-safe': {
-        text: '那个保险箱是赵明远当年留下的。陈先生一直没换密码......好像是赵明远的出生年份，1974年。陈先生说留着做纪念。',
+        text: '那个保险箱是赵明远当年留下的。陈先生一直没换密码，只说过"锁上刻着明远，年份在赵馆长办公室那张旧照片背后"。我不敢再碰它。',
         options: [
-          { text: '谢谢。（结束）', next: null }
+          { text: '我会去核对照片背面的年份。（结束）', next: null }
         ]
       }
     }
@@ -587,7 +587,7 @@ window.DIALOGUES_DATA = {
         options: [
           { text: '现在警局能提供什么协助？', clues: ['A15'], next: 'support' },
           { text: '探案系统能直接指出凶手吗？', next: 'system-limits' },
-          { text: '旧案关联检索有结果了吗？（出示证据）', next: 'archive-result', requiresClue: 'I19' },
+          { text: '旧案关联检索有结果了吗？（出示证据）', next: 'archive-result', requiresClue: 'I19', authorizeArchive: true },
           { text: '（结束对话）', next: null }
         ]
       },
@@ -620,7 +620,7 @@ window.DIALOGUES_DATA = {
       'archive-result': {
         text: '检索结果已经把赵明远旧案和南城赝品案拉出来了。档案室入口我给你开了权限，去找马承安，他会调卷。',
         options: [
-          { text: '旧案档案室现在可以进入了？', next: 'archive-unlocked' },
+          { text: '旧案档案室现在可以进入了？', next: 'archive-unlocked', authorizeArchive: true },
           { text: '（结束对话）', next: null }
         ]
       },

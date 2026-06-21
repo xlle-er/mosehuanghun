@@ -51,6 +51,8 @@
   font-size: var(--font-size-xl);
   color: var(--color-accent);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* ---- 场景描述 ---- */
@@ -192,6 +194,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  min-width: 0;
   background: var(--color-bg-panel);
   border: 1px solid var(--color-accent-dim);
   border-radius: var(--radius-full);
@@ -199,6 +202,11 @@
   font-family: var(--font-ui);
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
+}
+
+.scene-nav-btn span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .scene-nav-btn:hover {
@@ -419,11 +427,12 @@
 
 @media (max-width: 760px) {
   .scene {
-    padding-bottom: 152px;
+    padding-bottom: 168px;
   }
 
   .scene-header {
     padding: var(--spacing-md);
+    align-items: flex-start;
   }
 
   .scene-title {
@@ -431,12 +440,16 @@
   }
 
   .scene-nav {
-    max-width: calc(100vw - 32px);
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 24px);
     gap: var(--spacing-sm);
   }
 
   .scene-nav-btn {
+    flex: 1 1 132px;
+    justify-content: center;
     padding: var(--spacing-sm) var(--spacing-md);
+    line-height: 1.35;
   }
 
   .start-screen {
@@ -478,12 +491,75 @@
 }
 
 @media (max-width: 560px) {
+  .scene {
+    padding-bottom: 188px;
+  }
+
+  .scene-header {
+    gap: var(--spacing-sm);
+  }
+
+  .scene-header .btn-back {
+    flex: 0 0 auto;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .scene-title {
+    font-size: var(--font-size-md);
+    line-height: 1.35;
+  }
+
+  .scene-description {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    line-height: 1.85;
+  }
+
+  .scene-items,
+  .suspect-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+  }
+
+  .scene-item,
+  .suspect-card {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .scene-item .item-icon {
+    font-size: 30px;
+  }
+
+  .suspect-portrait {
+    width: 64px;
+    height: 64px;
+  }
+
+  .scene-nav {
+    width: calc(100vw - 24px);
+  }
+
+  .scene-nav-btn {
+    flex: 1 1 calc(50% - var(--spacing-sm));
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
   .estate-map {
     min-height: auto;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
+  }
+
+  .map-shell {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .map-header h2 {
+    font-size: var(--font-size-xl);
   }
 
   .estate-map::before,
@@ -499,6 +575,7 @@
     width: 100%;
     min-height: 82px;
     transform: none;
+    padding: var(--spacing-sm);
   }
 
   .estate-map .map-node:hover {

@@ -293,6 +293,15 @@ class DialogueSystem {
       option.clues.forEach(function (id) { clueSystem.collect(id); });
     }
 
+    if (option.authorizeArchive) {
+      if (typeof gameState.authorizeArchive === 'function') {
+        gameState.authorizeArchive();
+      } else {
+        gameState.set('archiveAuthorized', true);
+        gameState.unlockScene('case-archive');
+      }
+    }
+
     // 跳转
     if (option.next) {
       this.current.nodeStack.push(this.current.nodeId);

@@ -13,7 +13,12 @@ class ReasoningSystem {
     const container = document.getElementById('scene-container');
     if (!container) return;
 
-    if (!gameState.hasAllCoreClues()) {
+    if (!gameState.hasFinalReasoningClues()) {
+      const collected = gameState.get('collectedClues') || [];
+      const coreIds = typeof gameState.getCoreClueIds === 'function' ? gameState.getCoreClueIds() : [];
+      const externalIds = typeof gameState.getExternalCaseClueIds === 'function' ? gameState.getExternalCaseClueIds() : [];
+      const coreCount = coreIds.filter(id => collected.includes(id)).length;
+      const externalCount = externalIds.filter(id => collected.includes(id)).length;
       container.innerHTML = `
         <div class="scene" style="background:var(--color-bg-scene);">
           <div class="scene-header">
@@ -23,9 +28,9 @@ class ReasoningSystem {
           <div class="scene-description" style="text-align:center;max-width:500px;">
             <p style="font-size:48px;margin-bottom:24px;">🔒</p>
             <p>推理室尚未完全解锁。</p>
-            <p style="color:var(--color-text-muted);">你需要收集所有 18 条核心线索才能进行最终推理。</p>
+            <p style="color:var(--color-text-muted);">你需要完成山庄核心证据和外部协查闭环，才能进行最终推理。</p>
             <p style="color:var(--color-text-muted);margin-top:12px;">
-              当前已收集: ${gameState.get('collectedClues').filter(id => id.startsWith('C')).length} / 18 条核心线索
+              核心线索: ${coreCount} / ${coreIds.length}，外部协查: ${externalCount} / ${externalIds.length}
             </p>
             <button class="btn-primary" style="margin-top:24px;" onclick="router.navigate('/map')">
               返回继续调查
@@ -66,7 +71,9 @@ class ReasoningSystem {
   // 渲染问题
   _renderQuestion(question, index) {
     const optionsHtml = question.options.map((opt, oi) => `
-      <div class="reasoning-option" id="q${index}-o${oi}" onclick="reasoning.select(${index}, ${oi})">
+      <div class="reasoning-option" id="q${index}-o${oi}" role="button" tabindex="0"
+           onclick="reasoning.select(${index}, ${oi})"
+           onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); reasoning.select(${index}, ${oi}); }">
         <div class="option-radio"></div>
         <div class="option-text">${opt.label}</div>
       </div>
@@ -127,6 +134,12 @@ class ReasoningSystem {
   submit() {
     if (this.submitted) return;
 
+    if (!gameState.hasFinalReasoningClues()) {
+      alert('证据链尚未闭合，请继续调查山庄现场和外部协查线。');
+      this.render();
+      return;
+    }
+
     const questions = this._getQuestions();
 
     // 检查是否回答了所有问题
@@ -184,28 +197,12 @@ class ReasoningSystem {
     const container = document.getElementById('scene-container');
     if (!container) return;
 
-    const self = this;
-    const results = questions.map((q, i) => {
-      let correct;
-      if (q.multiSelect) {
-        const c = q.correctOptions.slice().sort();
-        const s = self.answers[i].slice().sort();
-        correct = c.length === s.length && c.every((v, idx) => v === s[idx]);
-      } else {
-        correct = self.answers[i] === q.correct;
-      }
-      return `<p style="color:${correct ? 'var(--color-success)' : 'var(--color-danger)'}">
-        ${correct ? '✓' : '✗'} 问题${i + 1}：${correct ? '正确' : '错误'}
-      </p>`;
-    }).join('');
-
     container.innerHTML = `
       <div class="scene" style="background:var(--color-bg-scene);">
         <div class="reasoning-container" style="text-align:center;padding-top:100px;">
           <h2 style="color:var(--color-warning);margin-bottom:24px;">推理部分正确</h2>
           <p style="margin-bottom:16px;">得分: ${score}/${maxScore}</p>
-          ${results}
-          <p style="color:var(--color-text-muted);margin-top:24px;">你的推理方向基本正确，但某些细节还需要重新思考。</p>
+          <p style="color:var(--color-text-muted);margin-top:24px;">你的方向接近真相，但证据链里还有环节没有扣紧。重新核对动机、作案路径、机会和排除项。</p>
           <div style="margin-top:32px;display:flex;gap:16px;justify-content:center;">
             <button class="btn-primary" onclick="reasoning.render()">重新推理</button>
             <button onclick="router.navigate('/map')">返回调查</button>
@@ -290,6 +287,20 @@ class ReasoningSystem {
           { label: '钱伯年面临赔偿' },
           { label: '林婉清有外遇' },
           { label: '画廊有可疑鉴定证书' }
+        ]
+      },
+      {
+        text: '要将赵雅琴从动机嫌疑推进到可指控，哪三类证据必须同时成立？',
+        points: 20,
+        multiSelect: true,
+        correctOptions: [0, 1, 2],
+        options: [
+          { label: '赵明远遗书与赵雅琴日记能解释长期动机' },
+          { label: '乌头草、修复记录和墨水材料能解释准备过程' },
+          { label: '异常墨迹、翻页习惯、指纹与法医复检能闭合作案路径' },
+          { label: '方志远资金异常能直接证明赵雅琴无辜' },
+          { label: '林婉清外遇能解释所有物证' },
+          { label: '旧案利益网可以单独替代现场证据' }
         ]
       }
     ];

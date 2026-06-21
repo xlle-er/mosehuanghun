@@ -79,6 +79,9 @@ class SceneManager {
       return `
         <div class="scene-item${discoveredClass}"
              data-item-id="${item.id}"
+             role="button"
+             tabindex="0"
+             onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); sceneManager.examineItem('${scene.id}', '${item.id}'); }"
              onclick="sceneManager.examineItem('${scene.id}', '${item.id}')">
           <div class="item-icon">${icon}</div>
           <div class="item-name">${item.name}</div>
@@ -122,7 +125,9 @@ class SceneManager {
     const html = suspects.map(s => {
       const portraitSrc = s.portrait ? `assets/images/${s.portrait}` : '';
       return `
-        <div class="suspect-card" onclick="sceneManager.talkTo('${s.id}')">
+        <div class="suspect-card" role="button" tabindex="0"
+             onclick="sceneManager.talkTo('${s.id}')"
+             onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); sceneManager.talkTo('${s.id}'); }">
           <img class="suspect-portrait" src="${portraitSrc}" alt="${s.name}"
                onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect fill=%22%232c1810%22 width=%2280%22 height=%2280%22/><text x=%2240%22 y=%2245%22 text-anchor=%22middle%22 fill=%22%23c9a96e%22 font-size=%2224%22>${s.name[0]}</text></svg>'">
           <div class="suspect-name">${s.name}</div>
@@ -189,7 +194,6 @@ class SceneManager {
       qian: 'A07',
       lin: 'A08',
       zhou: 'A09',
-      liang: 'A15',
       xu: 'A16'
     };
     const clueId = testimonyClues[suspectId];

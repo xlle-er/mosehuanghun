@@ -29,7 +29,11 @@ class Router {
 
   // 导航
   navigate(path) {
-    if (path === this.currentRoute) return;
+    const currentHash = window.location.hash.slice(1) || '/intro';
+    if (path === currentHash) {
+      if (path !== this.currentRoute) this._handle();
+      return;
+    }
     window.location.hash = path;
   }
 
