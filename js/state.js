@@ -5,7 +5,9 @@
 class GameState {
   constructor() {
     this._listeners = new Map();
-    this._state = this._load();
+    // 清除存档，确保每次都是新游戏
+    localStorage.removeItem('twilight-museum-save');
+    this._state = this._defaults();
     this._checkUnlocks();
   }
 
@@ -25,27 +27,14 @@ class GameState {
     };
   }
 
-  // 从 localStorage 加载
+  // 从 localStorage 加载（禁用：每次都是新游戏）
   _load() {
-    const raw = localStorage.getItem('twilight-museum-save');
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw);
-        return { ...this._defaults(), ...parsed };
-      } catch (e) {
-        console.warn('[State] Save data corrupted, using defaults');
-      }
-    }
     return this._defaults();
   }
 
-  // 保存到 localStorage
+  // 保存到 localStorage（禁用：每次都是新游戏）
   _save() {
-    try {
-      localStorage.setItem('twilight-museum-save', JSON.stringify(this._state));
-    } catch (e) {
-      console.warn('[State] Failed to save:', e);
-    }
+    // 不保存到localStorage，确保每次都是新游戏
   }
 
   // 获取值
@@ -238,7 +227,7 @@ class GameState {
   // 重置游戏
   reset() {
     this._state = this._defaults();
-    this._save();
+    // 不保存到localStorage
     this._emit('reset');
   }
 
